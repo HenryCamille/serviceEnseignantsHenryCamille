@@ -1,6 +1,12 @@
 package champollion;
 
+import java.util.*;
+
 public class Enseignant extends Personne {
+    
+    private final List<ServicePrevu> myService = new LinkedList<>();
+    private final List<Intervention> myIntervention = new LinkedList<>();
+
 
     // TODO : rajouter les autres méthodes présentes dans le diagramme UML
 
@@ -18,7 +24,15 @@ public class Enseignant extends Personne {
      */
     public int heuresPrevues() {
         // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        int x = 0;
+        int y = 0;
+        int z = 0;
+        for( ServicePrevu s : myService){
+            x += 1.5*s.getvolumeCM();
+            y += s.getvolumeTD();
+            z += 0.75*s.getvolumeTP();
+        }
+        return (x + y + z);
     }
 
     /**
@@ -32,9 +46,21 @@ public class Enseignant extends Personne {
      */
     public int heuresPrevuesPourUE(UE ue) {
         // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
-    }
+        int x = 0;
+        int y = 0;
+        int z = 0;
+        for( ServicePrevu s : myService){
+            if(ue.equals(s.getUE())){
+            x += 1.5*s.getvolumeCM();
+            y += s.getvolumeTD();
+            z += 0.75*s.getvolumeTP();
+            }
+        }
+        return (x + y + z);
 
+    }
+    
+    
     /**
      * Ajoute un enseignement au service prévu pour cet enseignant
      *
@@ -43,9 +69,51 @@ public class Enseignant extends Personne {
      * @param volumeTD le volume d'heures de TD
      * @param volumeTP le volume d'heures de TP
      */
-    public void ajouteEnseignement(UE ue, int volumeCM, int volumeTD, int volumeTP) {
+    public void ajouteEnseignement(UE ue, int volumeCM, int volumeTD, int volumeTP){
         // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        ServicePrevu s = new ServicePrevu(this, ue,volumeCM, volumeTD, volumeTP);
+		myService.add(s);
     }
+    
+    
+    public void ajouteIntervention(Intervention i){
+		myIntervention.add(i);
+    }
+        
+    
+    
+    public int heuresPlannifiees(){
+        int x = 0;
+        int y = 0;
+        int z = 0;
+        for( Intervention s : myIntervention){
+            if(s.getAnnulee() == false){
+                if(s.getTypeIntervention() == TypeIntervention.CM){
+                    x += 1.5*s.getDuree();
+                }
+                else if(s.getTypeIntervention() == TypeIntervention.TD){
+                    y += s.getDuree();
+                }
+                else {
+                    z += 0.75*s.getDuree();
+                }
+            }
+        }
+        return (x + y + z);
+    }
+    
+    public boolean enSousService(){
+            return heuresPlannifiees()<heuresPrevues();
+    }
+    
+    public List<Intervention> getIntervention(){
+        return this.myIntervention;
+    }
+        
+    
+    
+    
+    
+    
 
 }
